@@ -1,5 +1,6 @@
 from app.schemas.user import FullUserInfo
 from typing import Optional
+from app.exceptions import UserNotFound
 
 
 user_contents = {
@@ -87,6 +88,9 @@ class UserService:
     async def delete_user(user_id: int) -> None:
         global profile_infos
         global user_contents
+
+        if user_id not in profile_infos:
+            raise UserNotFound(user_id=user_id)
 
         del profile_infos[user_id]
         del user_contents[user_id]
