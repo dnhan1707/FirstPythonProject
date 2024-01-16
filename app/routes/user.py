@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends
 from app.services.user import UserService
 from app.schemas.user import (
     FullUserInfo,
     CreateResponseUserId,
     MultipleUserResponse
 )
+from app.dependencies import rate_limit
+
 # import logging
 #
 # logger = logging.getLogger(__name__)
@@ -16,12 +18,13 @@ from app.schemas.user import (
 # logger.setLevel(logging.WARNING)  # Only log warning info into text file/// info-debug-warning-error-critical
 
 
-def create_user_routers() -> APIRouter:
+def create_user_routers(user_contents: dict, profile_infos: dict) -> APIRouter:
     user_router = APIRouter(
         prefix="/user",
-        tags=["User"]
+        tags=["User"],
+        dependencies=[Depends(rate_limit)]
     )
-    user_service = UserService()
+    user_service = UserService(user_contents, profile_infos)
 
     # Always put general case on top
 
@@ -47,11 +50,12 @@ def create_user_routers() -> APIRouter:
         await user_service.create_update_user(full_user_info, user_id)
         return None
 
-    @user_router.delete("/{user_id")
+    @user_router.delete("/{user_id}")
     async def remove_user(user_id: int):
         # try:
         await user_service.delete_user(user_id)
         # except KeyError:   # KeyError is for specific error, more general will be Exception
         #     logger.warning(f"Warning cannot remove user {user_id}")
         #     raise HTTPException(status_code=404, detail=f"User with id {user_id} does NOT exist")
+
     return user_router
