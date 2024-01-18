@@ -1,30 +1,25 @@
 import pytest
-from app.services.user import UserService
+from app.schemas.user import FullUserInfo
 
 
-@pytest.fixture
-def user_contents():
-    val = {
-        0: {
-            "name": "default user",  # used to be "username": "tests user"
-            "liked_post": [1, 2, 3]
-        }
-    }
-    return val
+@pytest.fixture(scope="function")
+def valid_user_id():
+    return 0
 
 
-@pytest.fixture
-def profile_infos():
-    val = {
-        0: {
-            "description": "default description",
-            "long_bio": "default long bio"
-        }
-    }
-    return val
+@pytest.fixture(scope="function")
+def invalid_user_id():
+    return 1
 
 
-@pytest.fixture
-def user_service(user_contents, profile_infos) -> UserService:
-    user_service = UserService(user_contents, profile_infos)
-    return user_service
+@pytest.fixture(scope="function")
+def sample_full_user_info() -> FullUserInfo:
+    return FullUserInfo(description="test description",
+                        long_bio="test long bio",
+                        username="test username",
+                        liked_post=[1, 2, 3])
+
+
+@pytest.fixture(scope="function")
+def rate_limit() -> int:
+    return 50
