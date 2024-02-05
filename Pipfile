@@ -7,13 +7,15 @@ name = "pypi"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
+requests = "*"
+aiohttp = "*"
 
 [dev-packages]
 pytest = "*"
 mypy = "*"
 pytest-asyncio = "*"
-requests = "*"
 httpx = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.11"
